@@ -1,0 +1,3 @@
+const swarmA = {
+    DNA: 'Swarm',
+}
