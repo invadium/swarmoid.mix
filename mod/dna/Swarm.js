@@ -6,12 +6,11 @@ class Boid {
         extend(this, {
             x:     0,
             y:     0,
+            r:     10,
             dir:   0,
             speed: 40,
 
             timer: 0,
-
-            size: 10,
         }, st)
     }
 
@@ -39,6 +38,13 @@ class Boid {
             this.timer = 1 + rnd(3)
         }
     }
+
+    pick(x, y, ls) {
+        if (distance(this.x, this.y, x, y) <= this.r) {
+            ls.push(this)
+            return this
+        }
+    }
 }
 
 class Swarm {
@@ -53,13 +59,12 @@ class Swarm {
 
             flockingDist: 100,
         }, st)
-
-        this.spawn()
     }
 
     spawn() {
         this._ls.push( new Boid({
             __: this,
+            id: this._ls.length + 1,
         }) )
     }
 
@@ -81,13 +86,23 @@ class Swarm {
 
         for (let i = 0; i < N; i++) {
             const b = ls[i],
-                  size = b.size
+                  r = b.r
             triangle(
-                b.x + cos(b.dir) * size, b.y + sin(b.dir) * size,
-                b.x - cos(b.dir-.5) * size, b.y - sin(b.dir-.5) * size,
-                b.x - cos(b.dir+.5) * size, b.y - sin(b.dir+.5) * size,
+                b.x + cos(b.dir) * r, b.y + sin(b.dir) * r,
+                b.x - cos(b.dir-.5) * r, b.y - sin(b.dir-.5) * r,
+                b.x - cos(b.dir+.5) * r, b.y - sin(b.dir+.5) * r,
             )
         }
     }
 
+    pick(x, y, ls) {
+        let last
+
+        for (let i = this._ls.length - 1; i >= 0; i--) {
+            const picked = this._ls[i].pick(x, y, ls)
+            if (picked) last = picked
+        }
+
+        return last
+    }
 }
