@@ -141,11 +141,14 @@ class Swarm {
         }
 
         if (env.debug && env.debugSwarm) {
+            /*
+            // hint spawn point
             lineWidth(2)
             stroke(this.color)
             circle(this.spawnPoint.x, this.spawnPoint.y, 5)
             circle(this.spawnPoint.x, this.spawnPoint.y, 10)
             circle(this.spawnPoint.x, this.spawnPoint.y, 15)
+            */
 
             if (this.target) {
                 // show the target

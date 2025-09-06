@@ -5,7 +5,6 @@ const tune = {
     tree: {
         line:       .25,
         startLen:    100,
-        hivePoint:   2,
     },
 
     boid: {

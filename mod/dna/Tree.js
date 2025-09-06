@@ -44,9 +44,11 @@ class Tree {
 
         if (steps > 0) {
             steps --
-            this.branchOut(branch, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
-            this.branchOut(branch,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
+            branch.left  = this.branchOut(branch, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
+            branch.right = this.branchOut(branch,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
         }
+
+        return branch
     }
 
     grow(steps) {
@@ -63,10 +65,11 @@ class Tree {
             y2:  this.source.y + sin(dir) * len,
             width: BASE_WIDTH,
         }
+        this.root = root
         this.branches.push(root)
 
-        this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
-        this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
+        root.left  = this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
+        root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
     }
 
     evo(dt) {

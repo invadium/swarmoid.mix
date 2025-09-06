@@ -1,4 +1,3 @@
-
 function evo(dt) {
     const ls1 = lab.port.omegaSwarm._ls,
           ls2 = lab.port.sigmaSwarm._ls
