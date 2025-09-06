@@ -1,10 +1,10 @@
-const swarmB = {
+const omegaSwarm = {
     DNA: 'Swarm',
 
-    color: '#ff8000',
+    color: '#0080ff',
 
     spawnPoint: {
-        x:  250,
+        x: -250,
         y:  0,
     },
 

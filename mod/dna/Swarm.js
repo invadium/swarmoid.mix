@@ -64,6 +64,7 @@ class Swarm {
         for (let i = 0; i < N; i++) {
             const b = ls[i],
                   r = b.r
+            if (b.dead) continue
 
             fill(b.color)
             triangle(
@@ -75,6 +76,8 @@ class Swarm {
             if (env.debug) {
                 stroke(b.color)
                 lineWidth(1)
+
+                circle(b.x, b.y, b.cr)
 
                 const step = 3
                 let sh = step

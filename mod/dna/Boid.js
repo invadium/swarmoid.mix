@@ -10,6 +10,7 @@ class Boid {
             x:     0,
             y:     0,
             r:     15,
+            cr:    8,
             dir:   0,
             tdir:  0,
             speed: 0,
@@ -133,6 +134,7 @@ class Boid {
                 break
 
             case FLOCKING:
+                // TODO don't run it every single frame! cache the results!
                 const flockmates = this.findLocalFlockmates()
 
                 if (flockmates.length > 0 && flockmates.closestDist < this.stats.separationDist) {
