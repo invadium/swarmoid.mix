@@ -14,6 +14,7 @@ function mouseDown(e) {
                 const hue = rnd()
                 const color = hsl(hue, .5, .5)
                 const selectedColor = hsl(hue, .7, .6)
+                const closestColor  = hsl(hue, .8, .7)
 
                 if (env.selectedBoid) env.selectedBoid.selected = false
                 env.selectedBoid = last
@@ -22,7 +23,7 @@ function mouseDown(e) {
                 last.color = selectedColor
                 flockmates.forEach(boid => boid.color = color)
 
-                closest.color = '#ff0000'
+                closest.color = closestColor
             } else {
                 const wx = lab.port.lx(e.x),
                       wy = lab.port.ly(e.y)
@@ -36,8 +37,10 @@ function mouseDown(e) {
             break
 
         case 2:
-            last = lab.port.pick(e.x, e.y, ls)
-            if (last) last.switchMood()
+            const wx = lab.port.lx(e.x),
+                  wy = lab.port.ly(e.y)
+
+            lab.port.swarmB.setTarget(wx, wy)
             break
     }
 }

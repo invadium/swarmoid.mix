@@ -177,4 +177,8 @@ class Boid {
             return this
         }
     }
+
+    getStatus() {
+        return `[boid #${this.id}] ${round(this.x)}:${round(this.y)}`
+    }
 }

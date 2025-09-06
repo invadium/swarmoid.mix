@@ -5,10 +5,14 @@ class Swarm {
     constructor(st) {
         extend(this, {
             name: 'swarm' + (++id),
+
             _ls:  [],
 
-            x:    0,
-            y:    0,
+            color: '#0080ff',
+            spawnPoint: {
+                x:    0,
+                y:    0,
+            },
 
             stats: {
                 acceleration:   25,
@@ -33,9 +37,12 @@ class Swarm {
             id:    this._ls.length + 1,
             stats: this.stats,
 
+            x:     this.spawnPoint.x,
+            y:     this.spawnPoint.y,
             dir:   dir,
             tdir:  dir,
             timer: 1 + rnd(),
+            color: this.color,
         }) )
     }
 
@@ -104,7 +111,8 @@ class Swarm {
         }
 
         if (env.debug && this.target) {
-            fill('#ff0000')
+            // show the target
+            fill(this.color)
             circle(this.target.x, this.target.y, 2)
         }
     }
