@@ -11,12 +11,19 @@ class Swarm {
             y:    0,
 
             stats: {
-                acceleration: 10,
-                deceleration: 10,
-                turnSpeed:    HALF_PI,
-                flockingDist: 100,
+                acceleration:   25,
+                deceleration:   25,
+                maxSpeed:       75,
+                turnSpeed:      HALF_PI,
+                flockingDist:   150,
+                separationDist: 15,
+                cohesionDist:   75,
             },
         }, st)
+    }
+
+    setTarget(x, y) {
+        this.target = { x, y }
     }
 
     spawn() {
@@ -50,6 +57,7 @@ class Swarm {
         for (let i = 0; i < N; i++) {
             const b = ls[i],
                   r = b.r
+
             fill(b.color)
             triangle(
                 b.x + cos(b.dir) * r, b.y + sin(b.dir) * r,
@@ -57,11 +65,47 @@ class Swarm {
                 b.x - cos(b.dir+.5) * r, b.y - sin(b.dir+.5) * r,
             )
 
-            if (b.selected) {
+            if (env.debug) {
+                stroke(b.color)
+                lineWidth(1)
+
+                const step = 3
+                let sh = step
+                for (let j = 0; j < b.currentAction; j++) {
+                    const r2 = r + sh
+                    line(
+                        b.x - cos(b.dir-.5) * r2,
+                        b.y - sin(b.dir-.5) * r2,
+                        b.x - cos(b.dir+.5) * r2,
+                        b.y - sin(b.dir+.5) * r2
+                    )
+
+                    sh += step
+                }
+            }
+
+            if (env.debug && b.selected) {
                 lineWidth(1)
                 stroke(hsl(.2, .5, .5))
                 circle(b.x, b.y, b.stats.flockingDist)
+
+                const mates = b.selectedFlockmates
+                fill('#ff9000')
+                circle(mates.avgX, mates.avgY, 2)
+
+                stroke('#ff9000')
+                line(
+                    mates.avgX,
+                    mates.avgY,
+                    mates.avgX + cos(mates.avgDir) * 10,
+                    mates.avgY + sin(mates.avgDir) * 10
+                )
             }
+        }
+
+        if (env.debug && this.target) {
+            fill('#ff0000')
+            circle(this.target.x, this.target.y, 2)
         }
     }
 

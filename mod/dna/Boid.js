@@ -1,8 +1,7 @@
 // moods
 const NONE     = 0,
       BROWNIAN = 1,
-      FLOCK    = 2
-
+      FLOCKING = 2
 
 class Boid {
 
@@ -13,15 +12,21 @@ class Boid {
             r:     15,
             dir:   0,
             tdir:  0,
-            speed: 25,
+            speed: 0,
             color: '#0080ff',
 
-            mood:  BROWNIAN,
+            mood:  FLOCKING,
+            currentAction: 0,
 
             timer: 0,
 
             dead:  false,
         }, st)
+    }
+
+    switchMood() {
+        this.mood ++
+        if (this.mood > FLOCKING) this.mood = NONE
     }
 
     findClosestFlockmate(predicate) {
@@ -34,12 +39,7 @@ class Boid {
             if (boid !== this) {
                 const d = distance(this.x, this.y, boid.x, boid.y)
                 if (d < closestDist) {
-                    if (isFun(predicate)) {
-                        if (predicate(boid)) {
-                            closest = boid
-                            closestDist = d
-                        }
-                    } else {
+                    if (!isFun(predicate) || predicate(boid)) {
                         closest = boid
                         closestDist = d
                     }
@@ -50,20 +50,54 @@ class Boid {
         return closest
     }
 
-    locateLocalFlockmates(predicate) {
+    findLocalFlockmates(predicate) {
         const flockmates = [],
               ls = this.__._ls
 
+        let closest,
+            closestDist = Number.MAX_SAFE_INTEGER,
+            closestMate,
+            closestMateDist = Number.MAX_SAFE_INTEGER,
+            xAcc = this.x,
+            yAcc = this.y,
+            dirAcc = this.dir
+
         for (let i = ls.length - 1; i >= 0; i--) {
             const boid = ls[i]
-            if (boid !== this && distance(this.x, this.y, boid.x, boid.y) < this.stats.flockingDist) {
-                if (isFun(predicate)) {
-                    if (predicate(boid)) flockmate.push(boid)
-                } else {
+            if (boid === this) continue
+
+            const dist = distance(this.x, this.y, boid.x, boid.y)
+            if (dist < this.stats.flockingDist) {
+                if (!isFun(predicate) || predicate(boid)) {
                     flockmates.push(boid)
+                    dirAcc += boid.dir
+                    xAcc += boid.x
+                    yAcc += boid.y
+
+                    if (dist < closestMateDist) {
+                        closest         = boid
+                        closestDist     = dist
+                        closestMate     = boid
+                        closestMateDist = dist
+                    }
+                }
+            } else {
+                if (!isFun(predicate) || predicate(boid)) {
+                    if (dist < closestDist) {
+                        closest     = boid
+                        closestDist = dist
+                    }
                 }
             }
         }
+
+        flockmates.avgX   = xAcc / (flockmates.length + 1)
+        flockmates.avgY   = yAcc / (flockmates.length + 1)
+        flockmates.avgDir = math.normalizeAngle(dirAcc / (flockmates.length + 1))
+        flockmates.closest         = closest
+        flockmates.closestDist     = closestDist
+        flockmates.closestMate     = closestMate
+        flockmates.closestMateDist = closestMateDist
 
         return flockmates
     }
@@ -84,6 +118,7 @@ class Boid {
 
         switch(this.mood) {
             case NONE:
+                this.speed = max(this.speed - this.stats.deceleration * dt, 0)
                 break
 
             case BROWNIAN:
@@ -93,7 +128,46 @@ class Boid {
                     this.tdir  = rnd() * TAU
                     this.timer = 1 + rnd(3)
                 }
-            break
+
+                this.speed = min(this.speed + this.stats.acceleration * dt, this.stats.maxSpeed)
+                break
+
+            case FLOCKING:
+                const flockmates = this.findLocalFlockmates()
+
+                if (flockmates.length > 0 && flockmates.closestDist < this.stats.separationDist) {
+                    // separating
+                    const base = this
+                    let bearingAcc = 0
+                    flockmates.forEach(boid => {
+                        bearingAcc += bearing(base.x, base.y, boid.x, boid.y)
+                    })
+
+                    const avgBearing = bearingAcc / flockmates.length
+                    const separationDir = math.normalizeAngle(avgBearing + PI)
+
+                    this.tdir = separationDir
+                    this.speed = min(this.speed + this.stats.acceleration * dt, this.stats.maxSpeed)
+
+                    this.currentAction = 1
+
+                } else if ( distance(this.x, this.y, flockmates.avgX, flockmates.avgY) > this.stats.cohesionDist) {
+                    this.tdir = bearing(this.x, this.y, flockmates.avgX, flockmates.avgY)
+
+                    this.currentAction = 2
+
+                } else {
+                    if (this.__.target) {
+                        this.tdir = bearing(this.x, this.y, this.__.target.x, this.__.target.y)
+                        this.currentAction = 3
+                    } else {
+                        // alignment
+                        this.tdir = flockmates.avgDir
+                        this.speed = min(this.speed + this.stats.acceleration * dt, this.stats.maxSpeed)
+                        this.currentAction = 4
+                    }
+                }
+                break
         }
     }
 
