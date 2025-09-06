@@ -109,12 +109,41 @@ class Boid {
         this.y += sin(this.dir) * this.speed * dt
 
         // steer
+        /*
         if (this.dir !== this.tdir) {
             if (this.dir < this.tdir) {
                 this.dir = min(this.dir + this.stats.turnSpeed * dt, this.tdir)
             } else if (this.dir > this.tdir) {
                 this.dir = max(this.dir - this.stats.turnSpeed * dt, this.tdir)
             }
+        }
+        */
+        if (this.dir !== this.tdir) {
+            let left = true
+            let tune = true
+            if (this.dir < this.tdir) {
+                if (this.tdir - this.dir < PI) left = false
+                else tune = false
+            } else {
+                if (this.dir - this.tdir > PI) {
+                    left = false
+                    tune = false
+                }
+            }
+
+            if (left) {
+                this.dir = this.dir - this.stats.turnSpeed * dt
+                if (tune && this.dir < this.tdir) {
+                    this.dir = this.tdir
+                }
+                if (this.dir < 0) this.dir += TAU
+            } else {
+                this.dir = this.dir + this.stats.turnSpeed * dt
+                if (tune && this.dir > this.tdir) this.dir = this.tdir
+                if (this.dir >= TAU) this.dir = this.dir % TAU
+            }
+        } else {
+            // we are on target!
         }
 
         switch(this.mood) {
@@ -146,25 +175,23 @@ class Boid {
                     })
 
                     const avgBearing = bearingAcc / flockmates.length
-                    const separationDir = math.normalizeAngle(avgBearing + PI)
-
-                    this.tdir = separationDir
+                    this.tdir = math.normalizeAngle(avgBearing + PI)
                     this.speed = min(this.speed + this.stats.acceleration * dt, this.stats.maxSpeed)
 
                     this.currentAction = 1
 
                 } else if ( distance(this.x, this.y, flockmates.avgX, flockmates.avgY) > this.stats.cohesionDist) {
-                    this.tdir = bearing(this.x, this.y, flockmates.avgX, flockmates.avgY)
+                    this.tdir = math.normalizeAngle( bearing(this.x, this.y, flockmates.avgX, flockmates.avgY) )
 
                     this.currentAction = 2
 
                 } else {
                     if (this.__.target) {
-                        this.tdir = bearing(this.x, this.y, this.__.target.x, this.__.target.y)
+                        this.tdir = math.normalizeAngle( bearing(this.x, this.y, this.__.target.x, this.__.target.y) )
                         this.currentAction = 3
                     } else {
                         // alignment
-                        this.tdir = flockmates.avgDir
+                        this.tdir = math.normalizeAngle( flockmates.avgDir )
                         this.speed = min(this.speed + this.stats.acceleration * dt, this.stats.maxSpeed)
                         this.currentAction = 4
                     }
