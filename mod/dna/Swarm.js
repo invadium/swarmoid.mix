@@ -65,7 +65,6 @@ class Swarm {
         const ls = this._ls,
               N  = ls.length
 
-
         for (let i = 0; i < N; i++) {
             const b = ls[i],
                   r = b.r
@@ -82,8 +81,30 @@ class Swarm {
                 stroke(b.color)
                 lineWidth(1)
 
-                circle(b.x, b.y, b.cr)
+                if (env.debugContact) {
+                    circle(b.x, b.y, b.cr)
+                }
 
+                if (env.debugActions) {
+                    let ac = '#ffffff'
+                    switch(b.currentAction) {
+                        case 0: ac = '#808080'; break;
+                        case 1: ac = '#ff0000'; break;
+                        case 2: ac = '#ff9000'; break;
+                        case 3: ac = '#00ffff'; break;
+                        case 4: ac = '#00ff00'; break;
+                    }
+
+                    stroke(ac)
+                    lineWidth(2)
+                    triangle(
+                        b.x + cos(b.dir) * r, b.y + sin(b.dir) * r,
+                        b.x - cos(b.dir-.5) * r, b.y - sin(b.dir-.5) * r,
+                        b.x - cos(b.dir+.5) * r, b.y - sin(b.dir+.5) * r,
+                    )
+                }
+
+                /*
                 const step = 3
                 let sh = step
                 for (let j = 0; j < b.currentAction; j++) {
@@ -97,6 +118,7 @@ class Swarm {
 
                     sh += step
                 }
+                */
             }
 
             if (env.debug && b.selected) {
@@ -118,10 +140,18 @@ class Swarm {
             }
         }
 
-        if (env.debug && this.target) {
-            // show the target
-            fill(this.color)
-            circle(this.target.x, this.target.y, 2)
+        if (env.debug && env.debugSwarm) {
+            lineWidth(2)
+            stroke(this.color)
+            circle(this.spawnPoint.x, this.spawnPoint.y, 5)
+            circle(this.spawnPoint.x, this.spawnPoint.y, 10)
+            circle(this.spawnPoint.x, this.spawnPoint.y, 15)
+
+            if (this.target) {
+                // show the target
+                fill(this.color)
+                circle(this.target.x, this.target.y, 2)
+            }
         }
     }
 

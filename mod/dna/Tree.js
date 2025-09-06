@@ -1,5 +1,15 @@
-let id = 0
+const STEPS       = 8
 
+const BASE_LEN    = .62
+const VAR_LEN     = .25
+
+const BASE_SPREAD = .35
+const VAR_SPREAD  = .25
+
+const BASE_WIDTH   = 20
+const WIDTH_FACTOR = .75
+
+let id = 0
 class Tree {
 
     constructor(st) {
@@ -14,12 +24,12 @@ class Tree {
             branches: [],
         }, st)
 
-        this.grow(7)
+        this.grow(STEPS)
     }
 
     branchOut(anchor, incl, steps) {
         const dir = anchor.dir + incl
-        const len = anchor.len * (.6 + .3 * rnd())
+        const len = anchor.len * (BASE_LEN + VAR_LEN * rnd())
 
         const branch = {
             dir: dir,
@@ -28,21 +38,21 @@ class Tree {
             y1:  anchor.y2,
             x2:  anchor.x2 + cos(dir) * len,
             y2:  anchor.y2 + sin(dir) * len,
-            width: steps * 1.75,
+            width: anchor.width * WIDTH_FACTOR,
         }
         this.branches.push(branch)
 
         if (steps > 0) {
             steps --
-            this.branchOut(branch, -.4, steps)
-            this.branchOut(branch,  .4, steps)
+            this.branchOut(branch, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
+            this.branchOut(branch,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
         }
     }
 
     grow(steps) {
         // grow from the source
         const dir = -HALF_PI
-        const len = 100
+        const len = env.tune.tree.startLen
 
         const root = {
             dir: dir,
@@ -51,18 +61,20 @@ class Tree {
             y1:  this.source.y,
             x2:  this.source.x + cos(dir) * len,
             y2:  this.source.y + sin(dir) * len,
-            width: steps * 2.75,
+            width: BASE_WIDTH,
         }
         this.branches.push(root)
 
-        this.branchOut(root, -.4, steps)
-        this.branchOut(root,  .4, steps)
+        this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
+        this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
     }
 
     evo(dt) {
     }
 
     draw() {
+        save()
+        ctx.lineCap = 'round'
         for (let i = 0; i < this.branches.length; i++) {
             const b = this.branches[i]
 
@@ -70,6 +82,7 @@ class Tree {
             lineWidth(b.width)
             line(b.x1, b.y1, b.x2, b.y2)
         }
+        restore()
     }
 
 }

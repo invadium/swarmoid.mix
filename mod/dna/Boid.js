@@ -9,8 +9,8 @@ class Boid {
         extend(this, {
             x:     0,
             y:     0,
-            r:     15,
-            cr:    8,
+            r:     env.tune.boid.baseRadius,
+            cr:    env.tune.boid.baseContactRadius,
             dir:   0,
             tdir:  0,
             speed: 0,
