@@ -1,5 +1,6 @@
 const sigmaSwarm = {
     DNA: 'Swarm',
+    Z:    202,
 
     color: '#ff8000',
 

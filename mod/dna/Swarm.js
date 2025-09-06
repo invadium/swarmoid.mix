@@ -24,6 +24,11 @@ class Swarm {
                 cohesionDist:   75,
             },
         }, st)
+
+        this.setTarget(
+            this.spawnPoint.x,
+            this.spawnPoint.y
+        )
     }
 
     setTarget(x, y) {
