@@ -17,6 +17,27 @@ class Swarm {
         this._ls.push( boid )
     }
 
+    // apply a function to boids
+    // 
+    // predicate is optional, could be a team number or a function
+    apply(fn, predicate) {
+        if (isNum(predicate)) {
+            for (let i = this._ls.length - 1; i >= 0; i--) {
+                const boid = this._ls[i]
+                if (boid.team === predicate) fn(boid)
+            }
+        } else if (isFun(predicate)) {
+            for (let i = this._ls.length - 1; i >= 0; i--) {
+                const boid = this._ls[i]
+                if (predicate(boid)) fn(boid)
+            }
+        } else {
+            for (let i = this._ls.length - 1; i >= 0; i--) {
+                fn(this._ls[i])
+            }
+        }
+    }
+
     evo(dt) {
         const ls = this._ls,
               N  = ls.length

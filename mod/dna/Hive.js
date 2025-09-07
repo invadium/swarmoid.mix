@@ -96,6 +96,12 @@ class Hive {
         }
     }
 
+    setTarget(target) {
+        this.target = target
+
+        this.swarm.apply(boid => boid.setTarget(target), this.team)
+    }
+
     // spawn new boid for this hive
     spawn() {
         const dir = TAU * rnd()
@@ -132,6 +138,11 @@ class Hive {
         }
 
         restore()
+
+        if (env.debug && env.debugHive && this.target) {
+            fill(this.color)
+            circle(this.target.x, this.target.y, 2)
+        }
     }
 
 }

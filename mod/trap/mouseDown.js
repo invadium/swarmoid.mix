@@ -28,19 +28,26 @@ function mouseDown(e) {
                 const wx = lab.port.lx(e.x),
                       wy = lab.port.ly(e.y)
 
-                //lab.port.omegaSwarm.setTarget(wx, wy)
+                lab.port.omegaHive.setTarget({
+                    x: wx,
+                    y: wy
+                })
             }
             break
 
         case 1:
-            lab.port.omegaSwarm.spawn()
+            lab.port.omegaHive.spawn()
+            lab.port.sigmaHive.spawn()
             break
 
         case 2:
             const wx = lab.port.lx(e.x),
                   wy = lab.port.ly(e.y)
 
-            //lab.port.sigmaSwarm.setTarget(wx, wy)
+            lab.port.sigmaHive.setTarget({
+                x: wx,
+                y: wy
+            })
             break
     }
 }
