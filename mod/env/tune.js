@@ -5,6 +5,9 @@ const tune = {
     tree: {
         line:       .3,
         startLen:    100,
+
+        output:      20,
+        minDeposit:  1,
     },
 
     boid: {

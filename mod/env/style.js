@@ -4,6 +4,7 @@ const style = {
         main:  '#6b1fb1',
         title: '#6b1fb1',
 
+        fruit: '#c09020',
     },
     
     font: {

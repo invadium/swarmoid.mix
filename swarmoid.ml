@@ -1,10 +1,11 @@
 # core gameplay
 V monoswarm
 
-> individual targets
-> hive
-> basic keyboard and gamepad control
 > exofruits growing on tree branches
+> exohoney gathering
+> hive
+> individual targets
+> basic keyboard and gamepad control
 > exohoney gathering mechanic 
 > summon home
 > nesting for boids procreation

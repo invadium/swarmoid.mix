@@ -21,7 +21,10 @@ class Tree {
                 x: 0,
                 y: 0,
             },
+
             branches: [],
+            fruits:   [],
+            exohoney: 0,
         }, st)
 
         this.grow(STEPS)
@@ -74,7 +77,32 @@ class Tree {
         root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
     }
 
+    selectRandomTopBranch(base) {
+        if (base.left && base.right) {
+            const nextBase = (rnd() < .5)? base.left : base.right
+            return this.selectRandomTopBranch(nextBase)
+        }
+        return base
+    }
+
+    deposit(exohoney) {
+        const topBranch = this.selectRandomTopBranch(this.root)
+        if (!topBranch.fruit) {
+            topBranch.fruit = new dna.Fruit({
+                x: topBranch.x2,
+                y: topBranch.y2,
+            })
+            this.fruits.push(topBranch.fruit)
+        }
+        topBranch.fruit.deposit(exohoney)
+    }
+
     evo(dt) {
+        this.exohoney += env.tune.tree.output * dt
+        if (this.exohoney > env.tune.tree.minDeposit) {
+            this.deposit(this.exohoney)
+            this.exohoney = 0
+        }
     }
 
     draw() {
@@ -86,6 +114,15 @@ class Tree {
             stroke(this.color)
             lineWidth(b.width)
             line(b.x1, b.y1, b.x2, b.y2)
+        }
+
+        lineWidth(2)
+        stroke(env.style.color.fruit)
+        for (let i = 0; i < this.fruits.length; i++) {
+            const f = this.fruits[i]
+            if (!f.dead && f.r > 0) {
+                circle(f.x, f.y, f.r)
+            }
         }
         restore()
     }
