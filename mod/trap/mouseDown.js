@@ -4,6 +4,20 @@ function mouseDown(e) {
     const ls = []
     switch(e.button) {
         case 0:
+            // === left button ===
+
+            if (!env.mouse.collective) return
+
+            if (e.ctrlKey || e.shiftKey) {
+                const wx = lab.port.lx(e.x),
+                      wy = lab.port.ly(e.y)
+
+                env.mouse.collective.rushTo(wx, wy)
+            } else {
+                env.mouse.collective.gatherUp()
+            }
+
+            /*
             last = lab.port.pick(e.x, e.y, ls)
 
             if (last && last instanceof dna.Boid) {
@@ -38,21 +52,29 @@ function mouseDown(e) {
                     y: wy
                 })
             }
+            */
             break
 
         case 1:
-            lab.port.omegaHive.spawn()
-            lab.port.sigmaHive.spawn()
+            // === middle button ===
+            if (e.ctrlKey || e.shiftKey) {
+                // spawn action
+                if (!env.mouse.collective) return
+                env.mouse.collective.spawn()
+            } else {
+                // switch team action
+                let next = lab.overlord.team[ 1 ]
+
+                if (env.mouse.collective) {
+                    next = lab.overlord.team[ env.mouse.collective.id + 1 ]
+                    if (!next) next = lab.overlord.team[ 1 ]
+                }
+                env.mouse.collective = next
+            }
             break
 
         case 2:
-            const wx = lab.port.lx(e.x),
-                  wy = lab.port.ly(e.y)
-
-            lab.port.sigmaHive.setTarget({
-                x: wx,
-                y: wy
-            })
-            break
+            // === right button ===
+            // TODO go nesting?
     }
 }

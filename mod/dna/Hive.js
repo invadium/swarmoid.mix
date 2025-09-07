@@ -31,9 +31,16 @@ class Hive {
         this.y = this.branch.y2
         this.cr2 = this.cr * this.cr
 
+        this.nestingPoint = {
+            name: 'nestingPoint',
+            x: this.x,
+            y: this.y,
+        }
         this.gatheringPoint = {
-            x: this.tree.source.x,
-            y: this.tree.topY - this.tree.h * env.tune.tree.gatheringHeight
+            name:      'gatheringPoint',
+            gathering:  true,
+            x:          this.tree.source.x,
+            y:          this.tree.topY - this.tree.h * env.tune.tree.gatheringHeight
         }
 
         this.grow({
@@ -102,11 +109,31 @@ class Hive {
         this.swarm.apply(boid => boid.setTarget(target), this.team)
     }
 
+    rebase(hive) {
+        // TODO assign a new hive
+    }
+
+    isNestingPoint(target) {
+        const d = distance(this.x, this.y, target.x, target.y)
+        return (d <= env.tune.hive.nestingRadius)
+    }
+
+    findNestingBoids() {
+        const hive = this
+        return this.swarm.filter(e => !e.dead && e.hive === hive && e.target && e.target.nesting)
+    }
+
+    findGatheringBoids() {
+        const hive = this
+        return this.swarm.filter(e => !e.dead && e.hive === hive && e.target && e.target.gathering)
+    }
+
     // spawn new boid for this hive
     spawn() {
         const dir = TAU * rnd()
         const newBoid = new dna.Boid({
             team:  this.team,
+            hive:  this,
             stats: this.stats,
 
             x:     this.x,
@@ -117,7 +144,8 @@ class Hive {
             color: this.color,
         })
         this.swarm.attach( newBoid )
-        newBoid.setTarget(this.gatheringPoint)
+        //newBoid.setTarget(this.gatheringPoint)
+        newBoid.setTarget(this.nestingPoint)
 
         return newBoid
     }

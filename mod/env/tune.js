@@ -2,6 +2,10 @@ const tune = {
 
     baseSeparation: .65,
 
+    collective: {
+        gatheringSpeed: 1,
+    },
+
     tree: {
         line:       .3,
         startLen:    100,
@@ -15,6 +19,7 @@ const tune = {
     hive: {
         maxHP: 10000,
 
+        nestingRadius: 50,
         nestingFactor: 10,
         spawnBiomass:  100,
     },

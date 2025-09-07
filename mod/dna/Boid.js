@@ -41,6 +41,9 @@ class Boid {
 
     setTarget(target) {
         this.target = target
+        if (this.hive.isNestingPoint(target)) {
+            target.nesting = true
+        }
     }
 
     gatherAt(x, y) {

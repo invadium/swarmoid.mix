@@ -6,9 +6,9 @@ V exofruits growing on tree branches
 V exohoney gathering
 V nesting for boids procreation
 
-> basic keyboard and gamepad control
-> summon home
 > over-the-tree gathering
+> summon home
+> basic keyboard and gamepad control
 > attack enemy tree
 > attack mood
 > swarm bot

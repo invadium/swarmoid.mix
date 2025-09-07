@@ -11,7 +11,7 @@ function hatch(args, line, con) {
         if (!isNumber(team)) throw 'team number is expected'
     }
 
-    const hives = lab.port.filter(e => e instanceof dna.Hive)
+    const hives = lab.port.filter(e => !e.dead && e instanceof dna.Hive)
     if (team === 0) {
         while (count > 0) {
             hives[0].spawn()

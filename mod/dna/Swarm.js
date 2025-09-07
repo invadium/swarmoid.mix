@@ -38,6 +38,17 @@ class Swarm {
         }
     }
 
+    filter(fn) {
+        const ls = []
+
+        for (let i = 0; i < this._ls.length; i++) {
+            const boid = this._ls[i]
+            if (fn(boid)) ls.push(boid)
+        }
+
+        return ls
+    }
+
     collide(hitter) {
         const ls = this._ls
 
