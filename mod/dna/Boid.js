@@ -1,5 +1,5 @@
 // moods
-const NONE     = 0,
+const IDLE     = 0,
       BROWNIAN = 1,
       FLOCKING = 2
 
@@ -7,6 +7,7 @@ class Boid {
 
     constructor(st) {
         extend(this, {
+            team:  0,
             x:     0,
             y:     0,
             r:     env.tune.boid.baseRadius,
@@ -27,7 +28,15 @@ class Boid {
 
     switchMood() {
         this.mood ++
-        if (this.mood > FLOCKING) this.mood = NONE
+        if (this.mood > FLOCKING) this.mood = IDLE
+    }
+
+    setTarget(target) {
+        this.target = target
+    }
+
+    gatherAt(x, y) {
+        this.setTarget({ x, y })
     }
 
     findClosestFlockmate(predicate) {
@@ -147,7 +156,7 @@ class Boid {
         }
 
         switch(this.mood) {
-            case NONE:
+            case IDLE:
                 this.speed = max(this.speed - this.stats.deceleration * dt, 0)
                 break
 
@@ -186,11 +195,11 @@ class Boid {
                     this.currentAction = 2
 
                 } else {
-                    if (this.__.target) {
-                        this.tdir = math.normalizeAngle( bearing(this.x, this.y, this.__.target.x, this.__.target.y) )
+                    if (this.target) {
+                        this.tdir = math.normalizeAngle( bearing(this.x, this.y, this.target.x, this.target.y) )
                         this.currentAction = 3
                     } else {
-                        // alignment
+                        // alignment???
                         this.tdir = math.normalizeAngle( flockmates.avgDir )
                         this.speed = min(this.speed + this.stats.acceleration * dt, this.stats.maxSpeed)
                         this.currentAction = 4

@@ -24,6 +24,22 @@ class Hive {
 
         }, st)
 
+        switch(this.mount) {
+            case 'left':
+                this.branch = this.tree.root.left.left
+                break
+            case 'right':
+                this.branch = this.tree.root.right.right
+                break
+        }
+        this.x = this.branch.x2
+        this.y = this.branch.y2
+
+        this.gatheringPoint = {
+            x: this.tree.source.x,
+            y: this.tree.topY - 50
+        }
+
         this.grow({
             x:   0,
             y:   0,
@@ -43,6 +59,7 @@ class Hive {
 
             steps: 35,
         })
+
     }
 
     grow(st) {
@@ -94,6 +111,7 @@ class Hive {
             color: this.color,
         })
         this.swarm.attach( newBoid )
+        newBoid.setTarget(this.gatheringPoint)
     }
 
     draw() {

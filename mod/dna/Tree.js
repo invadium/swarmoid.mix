@@ -41,6 +41,7 @@ class Tree {
             width: anchor.width * WIDTH_FACTOR,
         }
         this.branches.push(branch)
+        if (branch.y2 < this.topY) this.topY = branch.y2
 
         if (steps > 0) {
             steps --
@@ -67,6 +68,7 @@ class Tree {
         }
         this.root = root
         this.branches.push(root)
+        this.topY = root.y2
 
         root.left  = this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
         root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)

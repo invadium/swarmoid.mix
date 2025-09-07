@@ -3,7 +3,7 @@ const tune = {
     baseSeparation: .65,
 
     tree: {
-        line:       .25,
+        line:       .3,
         startLen:    100,
     },
 

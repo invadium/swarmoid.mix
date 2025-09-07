@@ -27,16 +27,14 @@ function level(st) {
     })
     pin.link(swarm)
 
-    const omegaBranch = leftTree.root.right.right
     lab.port.spawn( dna.Hive, {
         Z:      201,
         name:  'omegaHive',
         team:   1,
         color: '#0080ff',
         swarm:  swarm,
-
-        x:      omegaBranch.x2,
-        y:      omegaBranch.y2,
+        tree:   leftTree,
+        mount:  'right',
 
         init: function() {
             for (let i = 0; i < 32; i++) {
@@ -45,16 +43,14 @@ function level(st) {
         },
     })
 
-    const sigmaBranch = rightTree.root.left.left
     lab.port.spawn( dna.Hive, {
         Z:      202,
         name:  'sigmaHive',
         team:   2,
         color: '#ff8000',
         swarm:  swarm,
-
-        x:      sigmaBranch.x2,
-        y:      sigmaBranch.y2,
+        tree:   rightTree,
+        mount:  'left',
 
         init: function() {
             for (let i = 0; i < 32; i++) {
