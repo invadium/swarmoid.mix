@@ -28,7 +28,7 @@ function mouseDown(e) {
                 const wx = lab.port.lx(e.x),
                       wy = lab.port.ly(e.y)
 
-                lab.port.omegaSwarm.setTarget(wx, wy)
+                //lab.port.omegaSwarm.setTarget(wx, wy)
             }
             break
 
@@ -40,7 +40,7 @@ function mouseDown(e) {
             const wx = lab.port.lx(e.x),
                   wy = lab.port.ly(e.y)
 
-            lab.port.sigmaSwarm.setTarget(wx, wy)
+            //lab.port.sigmaSwarm.setTarget(wx, wy)
             break
     }
 }

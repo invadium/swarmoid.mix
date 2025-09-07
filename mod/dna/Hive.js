@@ -4,12 +4,23 @@ class Hive {
     constructor(st) {
         extend(this, {
             name: 'hive' + (++id),
+            team: 0,
 
             x:  0,
             y:  0,
             cr: 15,
 
             segments: [],
+
+            stats: {
+                acceleration:   25,
+                deceleration:   25,
+                maxSpeed:       75,
+                turnSpeed:      HALF_PI,
+                flockingDist:   150,
+                separationDist: 15,
+                cohesionDist:   75,
+            },
 
         }, st)
 
@@ -21,15 +32,16 @@ class Hive {
             phi: 0,
             R:   0,
 
-            phiStep: .4,
+            phiStep: .3,
+            phiVar:  .1,
             rStep:    0.1,
             RStep:    0.6,
 
-            rFac:    1.01,
-            phiFac:  1.05,
+            rFac:    1.007,
+            phiFac:  1.02,
             RFac:    1.01,
 
-            steps: 25,
+            steps: 35,
         })
     }
 
@@ -49,10 +61,11 @@ class Hive {
                 y:   y,
                 r:   st.r + st.rStep,
 
-                phi: st.phi + st.phiStep,
+                phi: st.phi + st.phiStep + st.phiVar * rnd(),
                 R:   st.R   + st.RStep,
 
                 phiStep: st.phiStep * st.phiFac,
+                phiVar:  st.phiVar  * st.phiFac,
                 RStep:   st.RStep   * st.RFac,
                 rStep:   st.rStep   * st.rFac,
 
@@ -64,6 +77,23 @@ class Hive {
             }
             this.grow(next)
         }
+    }
+
+    // spawn new boid for this hive
+    spawn() {
+        const dir = TAU * rnd()
+        const newBoid = new dna.Boid({
+            team:  this.team,
+            stats: this.stats,
+
+            x:     this.x,
+            y:     this.y,
+            dir:   dir,
+            tdir:  dir,
+            timer: 1 + rnd(),
+            color: this.color,
+        })
+        this.swarm.attach( newBoid )
     }
 
     draw() {

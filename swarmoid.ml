@@ -1,4 +1,7 @@
 # core gameplay
+V monoswarm
+
+> individual targets
 > hive
 > basic keyboard and gamepad control
 > exofruits growing on tree branches

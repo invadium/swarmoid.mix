@@ -8,47 +8,13 @@ class Swarm {
 
             _ls:  [],
 
-            color: '#0080ff',
-            spawnPoint: {
-                x:    0,
-                y:    0,
-            },
-
-            stats: {
-                acceleration:   25,
-                deceleration:   25,
-                maxSpeed:       75,
-                turnSpeed:      HALF_PI,
-                flockingDist:   150,
-                separationDist: 15,
-                cohesionDist:   75,
-            },
         }, st)
-
-        this.setTarget(
-            this.spawnPoint.x,
-            this.spawnPoint.y
-        )
     }
 
-    setTarget(x, y) {
-        this.target = { x, y }
-    }
-
-    spawn() {
-        const dir = TAU * rnd()
-        this._ls.push( new dna.Boid({
-            __:    this,
-            id:    this._ls.length + 1,
-            stats: this.stats,
-
-            x:     this.spawnPoint.x,
-            y:     this.spawnPoint.y,
-            dir:   dir,
-            tdir:  dir,
-            timer: 1 + rnd(),
-            color: this.color,
-        }) )
+    attach(boid) {
+        boid.__ = this
+        boid.id = this._ls.length + 1
+        this._ls.push( boid )
     }
 
     evo(dt) {
@@ -103,22 +69,6 @@ class Swarm {
                         b.x - cos(b.dir+.5) * r, b.y - sin(b.dir+.5) * r,
                     )
                 }
-
-                /*
-                const step = 3
-                let sh = step
-                for (let j = 0; j < b.currentAction; j++) {
-                    const r2 = r + sh
-                    line(
-                        b.x - cos(b.dir-.5) * r2,
-                        b.y - sin(b.dir-.5) * r2,
-                        b.x - cos(b.dir+.5) * r2,
-                        b.y - sin(b.dir+.5) * r2
-                    )
-
-                    sh += step
-                }
-                */
             }
 
             if (env.debug && b.selected) {
@@ -137,23 +87,6 @@ class Swarm {
                     mates.avgX + cos(mates.avgDir) * 10,
                     mates.avgY + sin(mates.avgDir) * 10
                 )
-            }
-        }
-
-        if (env.debug && env.debugSwarm) {
-            /*
-            // hint spawn point
-            lineWidth(2)
-            stroke(this.color)
-            circle(this.spawnPoint.x, this.spawnPoint.y, 5)
-            circle(this.spawnPoint.x, this.spawnPoint.y, 10)
-            circle(this.spawnPoint.x, this.spawnPoint.y, 15)
-            */
-
-            if (this.target) {
-                // show the target
-                fill(this.color)
-                circle(this.target.x, this.target.y, 2)
             }
         }
     }
