@@ -1,14 +1,13 @@
 # core gameplay
+V individual targets
 V monoswarm
+V hive
+V exofruits growing on tree branches
+V exohoney gathering
+V nesting for boids procreation
 
-> exofruits growing on tree branches
-> exohoney gathering
-> hive
-> individual targets
 > basic keyboard and gamepad control
-> exohoney gathering mechanic 
 > summon home
-> nesting for boids procreation
 > over-the-tree gathering
 > attack enemy tree
 > attack mood

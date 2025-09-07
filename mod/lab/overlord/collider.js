@@ -1,6 +1,7 @@
 function evo(dt) {
     const ls = lab.port.swarm._ls,
           targets = lab.port._ls
+    env.dt = dt
 
     for (let i = ls.length - 1; i >= 0; i--) {
         const hitter = ls[i]

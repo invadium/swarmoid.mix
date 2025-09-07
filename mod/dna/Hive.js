@@ -7,6 +7,7 @@ class Hive {
             team:      0,
             hp:        env.tune.hive.maxHP,
             exohoney:  0,
+            biomass:   0,
 
             x:  0,
             y:  0,
@@ -117,6 +118,8 @@ class Hive {
         })
         this.swarm.attach( newBoid )
         newBoid.setTarget(this.gatheringPoint)
+
+        return newBoid
     }
 
     stockpile(exohoney) {
@@ -130,9 +133,26 @@ class Hive {
         // log(`[${this.name}] stockpile: ${this.exohoney} (+${exohoney})`)
     }
 
+    nest() {
+        const convert = env.tune.hive.nestingFactor * env.dt
+        if (this.exohoney > convert) {
+            this.exohoney -= convert
+            this.biomass += convert
+
+            if (this.biomass > env.tune.hive.spawnBiomass) {
+                this.biomass -= env.tune.hive.spawnBiomass
+                const newBoid = this.spawn()
+
+                log(`boid-#${newBoid.id}, welcome to ${this.name}`)
+            }
+        }
+    }
+
     hit(hitter) {
         if (hitter.team === this.team) {
             this.stockpile( hitter.deliver() )
+            this.nest()
+
         } else {
             // hit by the enemy!
             // TODO damage to the hive

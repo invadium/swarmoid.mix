@@ -14,6 +14,9 @@ const tune = {
 
     hive: {
         maxHP: 10000,
+
+        nestingFactor: 10,
+        spawnBiomass:  100,
     },
 
     boid: {
