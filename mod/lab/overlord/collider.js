@@ -1,7 +1,17 @@
 function evo(dt) {
-    const ls = lab.port.swarm._ls
+    const ls = lab.port.swarm._ls,
+          targets = lab.port._ls
 
     for (let i = ls.length - 1; i >= 0; i--) {
+        const hitter = ls[i]
+
+        if (!hitter.dead) {
+            for (let j = targets.length - 1; j >= 0; j--) {
+                const target = targets[j]
+                if (target.collide) target.collide(hitter)
+            }
+        }
+        /*
         for (let j = ls.length - 1; j >= 0; j--) {
             const boid1 = ls[i],
                   boid2 = ls[j]
@@ -12,5 +22,6 @@ function evo(dt) {
                 boid2.dead = true
             }
         }
+        */
     }
 }

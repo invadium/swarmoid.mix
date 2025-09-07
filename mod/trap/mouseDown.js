@@ -8,22 +8,25 @@ function mouseDown(e) {
 
             if (last) {
                 console.dir(last)
-                const flockmates = last.findLocalFlockmates()
-                const closest = last.findClosest()
 
-                const hue = rnd()
-                const color = hsl(hue, .5, .5)
-                const selectedColor = hsl(hue, .7, .6)
-                const closestColor  = hsl(hue, .8, .7)
+                if (last instanceof dna.Boid) {
+                    const flockmates = last.findLocalFlockmates()
+                    const closest = last.findClosest()
 
-                if (env.selectedBoid) env.selectedBoid.selected = false
-                env.selectedBoid = last
-                last.selected = true
-                last.selectedFlockmates = flockmates
-                last.color = selectedColor
-                flockmates.forEach(boid => boid.color = color)
+                    const hue = rnd()
+                    const color = hsl(hue, .5, .5)
+                    const selectedColor = hsl(hue, .7, .6)
+                    const closestColor  = hsl(hue, .8, .7)
 
-                closest.color = closestColor
+                    if (env.selectedBoid) env.selectedBoid.selected = false
+                    env.selectedBoid = last
+                    last.selected = true
+                    last.selectedFlockmates = flockmates
+                    last.color = selectedColor
+                    flockmates.forEach(boid => boid.color = color)
+
+                    closest.color = closestColor
+                }
             } else {
                 const wx = lab.port.lx(e.x),
                       wy = lab.port.ly(e.y)

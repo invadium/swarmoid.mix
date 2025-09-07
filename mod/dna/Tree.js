@@ -44,7 +44,11 @@ class Tree {
             width: anchor.width * WIDTH_FACTOR,
         }
         this.branches.push(branch)
+
+        if (branch.x2 < this.lowX) this.lowX = branch.x2
+        if (branch.x2 > this.topX) this.topX = branch.x2
         if (branch.y2 < this.topY) this.topY = branch.y2
+        if (branch.y2 > this.lowY) this.lowY = branch.y2
 
         if (steps > 0) {
             steps --
@@ -71,10 +75,19 @@ class Tree {
         }
         this.root = root
         this.branches.push(root)
+        this.lowY = root.y1
         this.topY = root.y2
+        this.lowX = root.x1
+        this.topX = root.x1
 
         root.left  = this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
         root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
+
+        const margin = 30
+        this.w = (this.topX - this.lowX) + margin
+        this.h = (this.lowY - this.topY) + margin
+        this.x = this.lowX + .5 * this.w - .5 * margin
+        this.y = this.topY + .5 * this.h - .5 * margin
     }
 
     selectRandomTopBranch(base) {
@@ -120,11 +133,17 @@ class Tree {
         stroke(env.style.color.fruit)
         for (let i = 0; i < this.fruits.length; i++) {
             const f = this.fruits[i]
-            if (!f.dead && f.r > 0) {
+            if (!f.dead && f.r >= 1) {
                 circle(f.x, f.y, f.r)
             }
         }
         restore()
+
+        if (env.debug && env.debugContact) {
+            lineWidth(1)
+            stroke('#ffff00')
+            rect(this.x - .5 * this.w, this.y - .5 * this.h, this.w, this.h)
+        }
     }
 
 }

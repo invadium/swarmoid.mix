@@ -6,7 +6,7 @@ const tune = {
         line:       .3,
         startLen:    100,
 
-        output:      20,
+        output:      5,
         minDeposit:  1,
     },
 
@@ -21,6 +21,9 @@ const tune = {
         flockingDist:   150,
         separationDist: 15,
         cohesionDist:   75,
+
+        maxHP:          100,
+        maxHarvest:     100,
     },
 
 }

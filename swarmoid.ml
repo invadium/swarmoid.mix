@@ -23,6 +23,7 @@ V monoswarm
 > camera slide between two active trees
 > camera pan on two active trees
 > winning conditions and progression
+> boids pool
 
 # juice
 > blood particles for battle indication

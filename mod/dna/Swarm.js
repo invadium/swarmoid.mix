@@ -38,6 +38,20 @@ class Swarm {
         }
     }
 
+    collide(hitter) {
+        const ls = this._ls
+
+        for (let i = ls.length - 1; i >= 0; i--) {
+            const target = ls[i]
+
+            if (!target.dead && target !== hitter && target.team !== hitter.team
+                    && math.distanceSq(hitter.x, hitter.y, target.x, target.y) < hitter.cr2 + target.cr2) {
+                hitter.dead = true
+                target.dead = true
+            }
+        }
+    }
+
     evo(dt) {
         const ls = this._ls,
               N  = ls.length

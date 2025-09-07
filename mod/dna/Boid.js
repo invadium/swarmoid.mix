@@ -7,15 +7,18 @@ class Boid {
 
     constructor(st) {
         extend(this, {
-            team:  0,
-            x:     0,
-            y:     0,
-            r:     0,
-            cr:    0,
-            dir:   0,
-            tdir:  0,
-            speed: 0,
-            color: '#0080ff',
+            team:    0,
+            hp:      0,
+            harvest: 0,
+
+            x:       0,
+            y:       0,
+            r:       0,
+            cr:      0,
+            dir:     0,
+            tdir:    0,
+            speed:   0,
+            color:  '#ffffff',
 
             mood:  FLOCKING,
             currentAction: 0,
@@ -25,8 +28,10 @@ class Boid {
             dead:  false,
         }, st)
 
+        this.hp = this.stats.maxHP
         this.r  = this.stats.baseRadius
         this.cr = this.stats.baseContactRadius
+        this.cr2 = this.cr * this.cr
     }
 
     switchMood() {
