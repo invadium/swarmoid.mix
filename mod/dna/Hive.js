@@ -12,15 +12,7 @@ class Hive {
 
             segments: [],
 
-            stats: {
-                acceleration:   25,
-                deceleration:   25,
-                maxSpeed:       75,
-                turnSpeed:      HALF_PI,
-                flockingDist:   150,
-                separationDist: 15,
-                cohesionDist:   75,
-            },
+            stats: extend({}, env.tune.boid)
 
         }, st)
 
@@ -139,9 +131,15 @@ class Hive {
 
         restore()
 
-        if (env.debug && env.debugHive && this.target) {
-            fill(this.color)
-            circle(this.target.x, this.target.y, 2)
+        if (env.debug && env.debugHive) {
+            lineWidth(2)
+            stroke(this.color)
+            circle(this.gatheringPoint.x, this.gatheringPoint.y, 4)
+
+            if (this.target) {
+                fill(this.color)
+                circle(this.target.x, this.target.y, 2)
+            }
         }
     }
 

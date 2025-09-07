@@ -8,5 +8,5 @@ Down2Jam Game Prototype.
 
 * debugContact - show collision circles
 * debugActions - hint boid current action
-* debugSwarm - show spawn point and current swarm target
+* debugHive - current hive target
 

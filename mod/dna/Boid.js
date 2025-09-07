@@ -10,8 +10,8 @@ class Boid {
             team:  0,
             x:     0,
             y:     0,
-            r:     env.tune.boid.baseRadius,
-            cr:    env.tune.boid.baseContactRadius,
+            r:     0,
+            cr:    0,
             dir:   0,
             tdir:  0,
             speed: 0,
@@ -24,6 +24,9 @@ class Boid {
 
             dead:  false,
         }, st)
+
+        this.r  = this.stats.baseRadius
+        this.cr = this.stats.baseContactRadius
     }
 
     switchMood() {
@@ -39,7 +42,7 @@ class Boid {
         this.setTarget({ x, y })
     }
 
-    findClosestFlockmate(predicate) {
+    findClosest(predicate) {
         const ls = this.__._ls
 
         let closest,
@@ -74,7 +77,7 @@ class Boid {
 
         for (let i = ls.length - 1; i >= 0; i--) {
             const boid = ls[i]
-            if (boid === this) continue
+            if (boid.team !== this.team || boid === this) continue
 
             const dist = distance(this.x, this.y, boid.x, boid.y)
             if (dist < this.stats.flockingDist) {

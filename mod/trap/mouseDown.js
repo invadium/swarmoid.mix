@@ -9,7 +9,7 @@ function mouseDown(e) {
             if (last) {
                 console.dir(last)
                 const flockmates = last.findLocalFlockmates()
-                const closest = last.findClosestFlockmate()
+                const closest = last.findClosest()
 
                 const hue = rnd()
                 const color = hsl(hue, .5, .5)
