@@ -8,7 +8,7 @@ function evo(dt) {
         if (!hitter.dead) {
             for (let j = targets.length - 1; j >= 0; j--) {
                 const target = targets[j]
-                if (target.collide) target.collide(hitter)
+                if (!target.dead && target.collide) target.collide(hitter)
             }
         }
         /*

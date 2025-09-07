@@ -120,8 +120,12 @@ class Boid {
         return flockmates
     }
 
+    isLoaded() {
+        return (this.harvest > 0)
+    }
+
     isFull() {
-        return this.harvest === this.stats.maxHarvest
+        return (this.harvest === this.stats.maxHarvest)
     }
 
     collect(exohoney) {
@@ -148,10 +152,14 @@ class Boid {
                 this.harvest = this.stats.maxHarvest
                 exohoney -= capacity
             }
-            log(`[boid #${this.id}] harvest: ${this.harvest} (+${exohoney})`)
-        } else {
-            log(`[boid #${this.id}] is full (${exohoney} left)`)
         }
+        return exohoney
+    }
+
+    deliver() {
+        const exohoney = this.harvest
+        this.harvest = 0
+
         return exohoney
     }
 

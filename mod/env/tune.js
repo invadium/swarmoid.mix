@@ -12,6 +12,10 @@ const tune = {
         gatheringHeight: 0.35, // gathering point in tree height
     },
 
+    hive: {
+        maxHP: 10000,
+    },
+
     boid: {
         baseRadius: 10,
         baseContactRadius: 7,

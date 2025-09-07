@@ -103,6 +103,21 @@ class Swarm {
                         b.x - cos(b.dir-.5) * r, b.y - sin(b.dir-.5) * r,
                         b.x - cos(b.dir+.5) * r, b.y - sin(b.dir+.5) * r,
                     )
+                } else if (env.debugHarvest) {
+
+                    let c
+                    if (b.isFull()) c = '#ff9040'
+                    else if (b.isLoaded()) c = '#804000'
+
+                    if (c) {
+                        stroke(c)
+                        lineWidth(2)
+                        triangle(
+                            b.x + cos(b.dir) * r, b.y + sin(b.dir) * r,
+                            b.x - cos(b.dir-.5) * r, b.y - sin(b.dir-.5) * r,
+                            b.x - cos(b.dir+.5) * r, b.y - sin(b.dir+.5) * r,
+                        )
+                    }
                 }
             }
 

@@ -3,8 +3,10 @@ class Hive {
 
     constructor(st) {
         extend(this, {
-            name: 'hive' + (++id),
-            team: 0,
+            name:     'hive' + (++id),
+            team:      0,
+            hp:        env.tune.hive.maxHP,
+            exohoney:  0,
 
             x:  0,
             y:  0,
@@ -26,6 +28,7 @@ class Hive {
         }
         this.x = this.branch.x2
         this.y = this.branch.y2
+        this.cr2 = this.cr * this.cr
 
         this.gatheringPoint = {
             x: this.tree.source.x,
@@ -88,6 +91,10 @@ class Hive {
         }
     }
 
+    adjust() {
+        // TODO reflect exohoney stockpile visually
+    }
+
     setTarget(target) {
         this.target = target
 
@@ -110,6 +117,33 @@ class Hive {
         })
         this.swarm.attach( newBoid )
         newBoid.setTarget(this.gatheringPoint)
+    }
+
+    stockpile(exohoney) {
+        if (exohoney === 0) return
+        // TODO head first if needed
+        // ...
+
+        this.exohoney += exohoney
+        this.adjust() // TODO reflect the stockpile visually
+
+        // log(`[${this.name}] stockpile: ${this.exohoney} (+${exohoney})`)
+    }
+
+    hit(hitter) {
+        if (hitter.team === this.team) {
+            this.stockpile( hitter.deliver() )
+        } else {
+            // hit by the enemy!
+            // TODO damage to the hive
+            // TODO particle effect
+        }
+    }
+
+    collide(hitter) {
+        if (math.distanceSq(hitter.x, hitter.y, this.x, this.y) < hitter.cr2 + this.cr2) {
+            this.hit(hitter)
+        }
     }
 
     draw() {

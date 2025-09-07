@@ -8,5 +8,6 @@ Down2Jam Game Prototype.
 
 * debugContact - show collision circles
 * debugActions - hint boid current action
+* debugHarvest - hint exohoney loads
 * debugHive - current hive target
 
