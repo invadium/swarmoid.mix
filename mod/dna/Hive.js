@@ -29,7 +29,7 @@ class Hive {
 
         this.gatheringPoint = {
             x: this.tree.source.x,
-            y: this.tree.topY - 50
+            y: this.tree.topY - this.tree.h * env.tune.tree.gatheringHeight
         }
 
         this.grow({

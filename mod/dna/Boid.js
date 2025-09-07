@@ -120,6 +120,41 @@ class Boid {
         return flockmates
     }
 
+    isFull() {
+        return this.harvest === this.stats.maxHarvest
+    }
+
+    collect(exohoney) {
+        const damage = this.stats.maxHP - this.hp
+        if (damage > 0) {
+            // heal first!
+            if (damage >= exohoney) {
+                // consume all
+                this.hp += exohoney
+                exohoney = 0
+            } else {
+                this.hp = this.stats.maxHP
+                exohoney -= damage
+            }
+        }
+
+        const capacity = this.stats.maxHarvest - this.harvest
+        if (capacity > 0) {
+            if (capacity >= exohoney) {
+                // consume all
+                this.harvest += exohoney
+                exohoney = 0
+            } else {
+                this.harvest = this.stats.maxHarvest
+                exohoney -= capacity
+            }
+            log(`[boid #${this.id}] harvest: ${this.harvest} (+${exohoney})`)
+        } else {
+            log(`[boid #${this.id}] is full (${exohoney} left)`)
+        }
+        return exohoney
+    }
+
     evo(dt) {
         // move
         this.x += cos(this.dir) * this.speed * dt

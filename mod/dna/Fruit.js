@@ -7,17 +7,23 @@ class Fruit {
             r:        1,
             cr:       1,
             exohoney: 0,
-
-            dead:     false,
         }, st)
     }
 
-    deposit(exohoney) {
-        this.exohoney = min(this.exohoney + exohoney, 4)
-        this.r = this.cr = this.exohoney
+    adjust() {
+        this.r = this.cr = floor(this.exohoney / 10)
     }
 
-    draw() {
-        stroke(env.style.color.fruit)
+    deposit(exohoney) {
+        this.exohoney = min(this.exohoney + exohoney, 40)
+        this.adjust()
+    }
+
+    extract() {
+        const exohoney = this.exohoney
+        this.exohoney = 0
+        this.adjust()
+        
+        return exohoney
     }
 }

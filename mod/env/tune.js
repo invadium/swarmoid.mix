@@ -6,8 +6,10 @@ const tune = {
         line:       .3,
         startLen:    100,
 
-        output:      5,
-        minDeposit:  1,
+        output:      40,
+        minDeposit:  10,
+
+        gatheringHeight: 0.35, // gathering point in tree height
     },
 
     boid: {

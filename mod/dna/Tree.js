@@ -9,6 +9,8 @@ const VAR_SPREAD  = .25
 const BASE_WIDTH   = 20
 const WIDTH_FACTOR = .75
 
+const MIN_FRUIT    = 1
+
 let id = 0
 class Tree {
 
@@ -83,11 +85,37 @@ class Tree {
         root.left  = this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
         root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
 
-        const margin = 30
+        const margin = 40
         this.w = (this.topX - this.lowX) + margin
         this.h = (this.lowY - this.topY) + margin
         this.x = this.lowX + .5 * this.w - .5 * margin
         this.y = this.topY + .5 * this.h - .5 * margin
+        this.x1 = this.x - .5 * this.w
+        this.y1 = this.y - .5 * this.h
+        this.x2 = this.x + this.w
+        this.y2 = this.y + this.h
+    }
+
+    collide(hitter) {
+        if (hitter.isFull()
+            || hitter.x < this.x1
+            || hitter.x > this.x2
+            || hitter.y < this.y1
+            || hitter.y > this.y2) return // the hitter is full or outside the tree bounds
+
+        const ls = this.fruits
+        for (let i = ls.length - 1; i >= 0; i--) {
+            const fruit = ls[i]
+            if (fruit.cr < MIN_FRUIT) continue
+
+            const dx = abs(fruit.x - hitter.x),
+                  dy = abs(fruit.y - hitter.y)
+            
+            if (dx < fruit.cr && dy < fruit.cr) {
+                const honeyLeftover = hitter.collect( fruit.extract() )
+                if (honeyLeftover > 0) fruit.deposit(honeyLeftover) // redeposit leftovers
+            }
+        }
     }
 
     selectRandomTopBranch(base) {
@@ -133,7 +161,7 @@ class Tree {
         stroke(env.style.color.fruit)
         for (let i = 0; i < this.fruits.length; i++) {
             const f = this.fruits[i]
-            if (!f.dead && f.r >= 1) {
+            if (f.r >= MIN_FRUIT) {
                 circle(f.x, f.y, f.r)
             }
         }

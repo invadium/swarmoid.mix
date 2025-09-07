@@ -6,28 +6,30 @@ function mouseDown(e) {
         case 0:
             last = lab.port.pick(e.x, e.y, ls)
 
-            if (last) {
+            if (last && last instanceof dna.Boid) {
                 console.dir(last)
 
-                if (last instanceof dna.Boid) {
-                    const flockmates = last.findLocalFlockmates()
-                    const closest = last.findClosest()
+                const flockmates = last.findLocalFlockmates()
+                const closest = last.findClosest()
 
-                    const hue = rnd()
-                    const color = hsl(hue, .5, .5)
-                    const selectedColor = hsl(hue, .7, .6)
-                    const closestColor  = hsl(hue, .8, .7)
+                const hue = rnd()
+                const color = hsl(hue, .5, .5)
+                const selectedColor = hsl(hue, .7, .6)
+                const closestColor  = hsl(hue, .8, .7)
 
-                    if (env.selectedBoid) env.selectedBoid.selected = false
-                    env.selectedBoid = last
-                    last.selected = true
-                    last.selectedFlockmates = flockmates
-                    last.color = selectedColor
-                    flockmates.forEach(boid => boid.color = color)
+                if (env.selectedBoid) env.selectedBoid.selected = false
+                env.selectedBoid = last
+                last.selected = true
+                last.selectedFlockmates = flockmates
+                last.color = selectedColor
+                flockmates.forEach(boid => boid.color = color)
 
-                    closest.color = closestColor
-                }
+                closest.color = closestColor
             } else {
+                if (last) {
+                    console.dir(last)
+                }
+
                 const wx = lab.port.lx(e.x),
                       wy = lab.port.ly(e.y)
 
