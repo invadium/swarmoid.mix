@@ -1,4 +1,4 @@
-const STEPS       = 8
+const STEPS       =  2
 
 const BASE_LEN    = .62
 const VAR_LEN     = .25
@@ -6,7 +6,7 @@ const VAR_LEN     = .25
 const BASE_SPREAD = .35
 const VAR_SPREAD  = .25
 
-const BASE_WIDTH   = 20
+const BASE_WIDTH   =  20
 const WIDTH_FACTOR = .75
 
 const MIN_FRUIT    = 1

@@ -46,6 +46,24 @@ class Collective {
         }
     }
 
+    gatherOneUp() {
+        const nestingPack    = this.hive.findNestingBoids(),
+              gatheringPoint = this.hive.gatheringPoint
+        if (nestingPack.length === 0) return
+
+        const boid = math.rnde(nestingPack)
+        boid.setTarget( gatheringPoint )
+    }
+
+    ungatherOneDown() {
+        const gatheringPack = this.hive.findGatheringBoids(),
+              nestingPoint  = this.hive.nestingPoint
+        if (gatheringPack.length === 0) return
+
+        const boid = math.rnde(gatheringPack)
+        boid.setTarget( nestingPoint )
+    }
+
     selectRandomNestingBoid() {
         return math.rnde( this.hive.findNestingBoids() )
     }
