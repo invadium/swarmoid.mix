@@ -16,6 +16,11 @@ const tune = {
         gatheringHeight: 0.35, // gathering point in tree height
     },
 
+    fruit: {
+        maxWeight:    40,
+        sproutWeight: 40,
+    },
+
     hive: {
         maxHP: 10000,
 

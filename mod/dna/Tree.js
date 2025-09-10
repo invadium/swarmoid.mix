@@ -1,4 +1,4 @@
-const STEPS       =  2
+const STEPS       =  3
 
 const BASE_LEN    = .62
 const VAR_LEN     = .25
@@ -6,8 +6,9 @@ const VAR_LEN     = .25
 const BASE_SPREAD = .35
 const VAR_SPREAD  = .25
 
-const BASE_WIDTH   =  20
-const WIDTH_FACTOR = .75
+const ROOT_WIDTH   = 5
+const WIDTH_GROW   = 1
+const WIDTH_DOWN_FACTOR = 0.5
 
 const MIN_FRUIT    = 1
 
@@ -32,59 +33,23 @@ class Tree {
         this.grow(STEPS)
     }
 
-    branchOut(anchor, incl, steps) {
-        const dir = anchor.dir + incl
-        const len = anchor.len * (BASE_LEN + VAR_LEN * rnd())
-
-        const branch = {
-            dir: dir,
-            len: len,
-            x1:  anchor.x2,
-            y1:  anchor.y2,
-            x2:  anchor.x2 + cos(dir) * len,
-            y2:  anchor.y2 + sin(dir) * len,
-            width: anchor.width * WIDTH_FACTOR,
-        }
-        this.branches.push(branch)
-
+    adjustBranch(branch) {
         if (branch.x2 < this.lowX) this.lowX = branch.x2
         if (branch.x2 > this.topX) this.topX = branch.x2
         if (branch.y2 < this.topY) this.topY = branch.y2
         if (branch.y2 > this.lowY) this.lowY = branch.y2
 
-        if (steps > 0) {
-            steps --
-            branch.left  = this.branchOut(branch, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
-            branch.right = this.branchOut(branch,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
-        }
-
-        return branch
+        if (branch.left) this.adjustBranch(branch.left)
+        if (branch.right) this.adjustBranch(branch.right)
     }
 
-    grow(steps) {
-        // grow from the source
-        const dir = -HALF_PI
-        const len = env.tune.tree.startLen
-
-        const root = {
-            dir: dir,
-            len: len,
-            x1:  this.source.x,
-            y1:  this.source.y,
-            x2:  this.source.x + cos(dir) * len,
-            y2:  this.source.y + sin(dir) * len,
-            width: BASE_WIDTH,
-        }
-        this.root = root
-        this.branches.push(root)
-        this.lowY = root.y1
-        this.topY = root.y2
-        this.lowX = root.x1
-        this.topX = root.x1
-
-        root.left  = this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
-        root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
-
+    adjust() {
+        this.lowY = this.root.y1
+        this.topY = this.root.y2
+        this.lowX = this.root.x1
+        this.topX = this.root.x1
+        this.adjustBranch(this.root)
+        
         const margin = 40
         this.w = (this.topX - this.lowX) + margin
         this.h = (this.lowY - this.topY) + margin
@@ -94,6 +59,69 @@ class Tree {
         this.y1 = this.y - .5 * this.h
         this.x2 = this.x + this.w
         this.y2 = this.y + this.h
+    }
+
+    growWidth(downBranch, width) {
+        if (!downBranch) return
+
+        downBranch.width += width
+        this.growWidth(downBranch.__, width * WIDTH_DOWN_FACTOR)
+    }
+
+    branchOut(anchor, incl, steps) {
+        if (steps === 0) return
+
+        const dir = anchor.dir + incl
+        const len = anchor.len * (BASE_LEN + VAR_LEN * rnd())
+
+        const branch = {
+            __:  anchor,
+            dir: dir,
+            len: len,
+            x1:  anchor.x2,
+            y1:  anchor.y2,
+            x2:  anchor.x2 + cos(dir) * len,
+            y2:  anchor.y2 + sin(dir) * len,
+            //width: anchor.width * WIDTH_FACTOR,
+            width: 1,
+        }
+        this.branches.push(branch)
+        this.growWidth(branch.__, WIDTH_GROW)
+
+        this.sprout(branch, steps - 1)
+
+        return branch
+    }
+
+    sprout(branch, steps) {
+        if (!branch || branch.left || branch.right) return
+
+        branch.left  = this.branchOut(branch, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
+        branch.right = this.branchOut(branch,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
+    }
+
+    grow(steps) {
+        // grow from the source
+        const dir = -HALF_PI
+        const len = env.tune.tree.startLen
+
+        const root = {
+            __:  null,
+            dir: dir,
+            len: len,
+            x1:  this.source.x,
+            y1:  this.source.y,
+            x2:  this.source.x + cos(dir) * len,
+            y2:  this.source.y + sin(dir) * len,
+            width: ROOT_WIDTH,
+        }
+        this.root = root
+        this.branches.push(root)
+
+        root.left  = this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
+        root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
+
+        this.adjust()
     }
 
     collide(hitter) {
@@ -130,8 +158,10 @@ class Tree {
         const topBranch = this.selectRandomTopBranch(this.root)
         if (!topBranch.fruit) {
             topBranch.fruit = new dna.Fruit({
-                x: topBranch.x2,
-                y: topBranch.y2,
+                tree: this,
+                __:   topBranch,
+                x:    topBranch.x2,
+                y:    topBranch.y2,
             })
             this.fruits.push(topBranch.fruit)
         }

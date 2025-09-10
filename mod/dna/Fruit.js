@@ -1,12 +1,13 @@
 class Fruit {
 
     constructor(st) {
-        augment(this, {
+        extend(this, {
             x:        0,
             y:        0,
             r:        1,
             cr:       1,
             exohoney: 0,
+            extra:    0,
         }, st)
     }
 
@@ -14,16 +15,32 @@ class Fruit {
         this.r = this.cr = floor(this.exohoney / 10)
     }
 
-    deposit(exohoney) {
-        this.exohoney = min(this.exohoney + exohoney, 40)
+    sprout() {
+        this.exohoney = 0
+        this.extra = 0
         this.adjust()
+
+        this.tree.sprout(this.__, 1)
+        this.tree.adjust()
+    }
+
+    deposit(exohoney) {
+        if (this.exohoney === env.tune.fruit.maxWeight) {
+            this.extra += exohoney
+            if (this.extra >= env.tune.fruit.sproutWeight) this.sprout()
+        } else {
+            this.exohoney = min(this.exohoney + exohoney, env.tune.fruit.maxWeight)
+            this.adjust()
+        }
     }
 
     extract() {
         const exohoney = this.exohoney
         this.exohoney = 0
+        this.extra = 0
         this.adjust()
         
         return exohoney
     }
+
 }

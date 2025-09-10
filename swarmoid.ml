@@ -6,6 +6,7 @@ V exofruits growing on tree branches
 V exohoney gathering
 V nesting for boids procreation
 
+> branch length grow over time (with all children shifted accordingly)
 > over-the-tree gathering
 > summon home
 > basic keyboard and gamepad control
