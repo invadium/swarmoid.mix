@@ -31,18 +31,6 @@ class Hive {
         this.y = this.branch.y2
         this.cr2 = this.cr * this.cr
 
-        this.nestingPoint = {
-            name: 'nestingPoint',
-            x: this.x,
-            y: this.y,
-        }
-        this.gatheringPoint = {
-            name:      'gatheringPoint',
-            gathering:  true,
-            x:          this.tree.source.x,
-            y:          this.tree.topY - this.tree.h * env.tune.tree.gatheringHeight
-        }
-
         this.grow({
             x:   0,
             y:   0,
@@ -63,6 +51,20 @@ class Hive {
             steps: 35,
         })
 
+        this.nestingPoint = {
+            name: 'nestingPoint',
+            x: this.x,
+            y: this.y,
+        }
+        this.gatheringPoint = {
+            name:      'gatheringPoint',
+            gathering:  true,
+            x:          0,
+            y:          0,
+            //x:          this.tree.source.x,
+            //y:          this.tree.topY - this.tree.h * env.tune.tree.gatheringHeight
+        }
+        this.adjust()
     }
 
     grow(st) {
@@ -101,6 +103,8 @@ class Hive {
 
     adjust() {
         // TODO reflect exohoney stockpile visually
+        this.gatheringPoint.x = this.tree.source.x
+        this.gatheringPoint.y = this.tree.topY - this.tree.h * env.tune.tree.gatheringHeight
     }
 
     setTarget(target) {
@@ -118,6 +122,11 @@ class Hive {
         return (d <= env.tune.hive.nestingRadius)
     }
 
+    findBoids(predicate) {
+        const hive = this
+        return this.swarm.filter(e => !e.dead && e.hive === hive && predicate(e))
+    }
+
     findNestingBoids() {
         const hive = this
         return this.swarm.filter(e => !e.dead && e.hive === hive && e.target && e.target.nesting)
@@ -126,6 +135,11 @@ class Hive {
     findGatheringBoids() {
         const hive = this
         return this.swarm.filter(e => !e.dead && e.hive === hive && e.target && e.target.gathering)
+    }
+
+    findForagingBoids() {
+        const hive = this
+        return this.swarm.filter(e => !e.dead && e.hive === hive && (!e.target || (!e.target.nesting && !e.target.gathering)))
     }
 
     // spawn new boid for this hive

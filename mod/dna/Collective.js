@@ -8,25 +8,42 @@ class Collective {
         this.hive.spawn()
     }
 
-    gatherUp() {
-        this.gathering = true
-        this.timer = 0
-    }
-
     dispatch(x, y) {
-        if (!this.gathering) return
         const target = { x, y }
 
         const gatheringPack = this.hive.findGatheringBoids()
-        gatheringPack.forEach( boid => boid.setTarget(target) )
 
-        this.gathering = false
+        if (gatheringPack.length > 0) {
+            gatheringPack.forEach( boid => boid.setTarget(target) )
+            this.lastPack = gatheringPack
+        } else if (this.lastPack) {
+            this.lastPack.forEach( boid => boid.setTarget(target) )
+        }
     }
 
     rushTo(x, y) {
-        const target = { x, y },
-              team = this.id
-        this.swarm.apply(boid => boid.setTarget(target), boid => !boid.dead && boid.team === team)
+        const target = { x, y }
+
+        const pack = this.hive.findBoids( boid => true )
+        pack.forEach( boid => boid.setTarget(target) )
+
+        this.lastPack = gatheringPack
+    }
+
+    nest() {
+        const foragingPack = this.hive.findForagingBoids(),
+              nestingPoint = this.hive.nestingPoint
+        foragingPack.forEach( boid => boid.setTarget(nestingPoint) )
+    }
+
+    gatherUp(share) {
+        const nestingPack    = this.hive.findNestingBoids(),
+              gatheringPoint = this.hive.gatheringPoint,
+              toGather       = floor(nestingPack.length * share)
+
+        for (let i = 0; i < toGather; i++) {
+            nestingPack[i].setTarget(gatheringPoint)
+        }
     }
 
     selectRandomNestingBoid() {

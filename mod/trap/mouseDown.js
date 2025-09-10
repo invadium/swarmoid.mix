@@ -1,22 +1,11 @@
 function mouseDown(e) {
+    //let last
+    //const ls = []
+    const collective = env.mouse.collective
 
-    let last
-    const ls = []
     switch(e.button) {
         case 0:
             // === left button ===
-
-            if (!env.mouse.collective) return
-
-            if (e.ctrlKey || e.shiftKey) {
-                const wx = lab.port.lx(e.x),
-                      wy = lab.port.ly(e.y)
-
-                env.mouse.collective.rushTo(wx, wy)
-            } else {
-                env.mouse.collective.gatherUp()
-            }
-
             /*
             last = lab.port.pick(e.x, e.y, ls)
 
@@ -56,13 +45,12 @@ function mouseDown(e) {
             break
 
         case 1:
-            // === middle button ===
+            break
+
+        case 2:
+            // === right button up ===
             if (e.ctrlKey || e.shiftKey) {
-                // spawn action
-                if (!env.mouse.collective) return
-                env.mouse.collective.spawn()
-            } else {
-                // switch team action
+                // switch the mouse team
                 let next = lab.overlord.team[ 1 ]
 
                 if (env.mouse.collective) {
@@ -70,11 +58,11 @@ function mouseDown(e) {
                     if (!next) next = lab.overlord.team[ 1 ]
                 }
                 env.mouse.collective = next
+
+            } else {
+                if (!collective) return
+                collective.nest()
             }
             break
-
-        case 2:
-            // === right button ===
-            // TODO go nesting?
     }
 }
