@@ -1,4 +1,4 @@
-const STEPS       =  4
+const STEPS       =  5
 
 const BASE_LEN    = .62
 const VAR_LEN     = .25
@@ -7,8 +7,8 @@ const BASE_SPREAD = .35
 const VAR_SPREAD  = .25
 
 const ROOT_WIDTH   = 5
-const WIDTH_GROW   = 1
-const WIDTH_DOWN_FACTOR = 0.5
+const WIDTH_GROW   = .3
+const WIDTH_DOWN_FACTOR = 0.25
 
 const MIN_FRUIT    = 1
 
@@ -62,7 +62,6 @@ class Tree {
         this.y2 = this.y + this.h
 
         this.juice = this.root.width * env.tune.tree.baseJuice
-        log(`[${this.name}] juice: ${this.juice}`)
     }
 
     growWidth(downBranch, width) {
@@ -70,6 +69,65 @@ class Tree {
 
         downBranch.width += width
         this.growWidth(downBranch.__, width * WIDTH_DOWN_FACTOR)
+    }
+
+    moveBranch(branch, dx, dy) {
+        if (!branch) return
+
+        branch.x1 += dx
+        branch.y1 += dy
+        branch.x2 += dx
+        branch.y2 += dy
+
+        if (branch.fruit) {
+            branch.fruit.x += dx
+            branch.fruit.y += dy
+        }
+        if (branch.hive) {
+            branch.hive.x += dx
+            branch.hive.y += dy
+        }
+
+        if (branch.left ) this.moveBranch(branch.left,  dx, dy)
+        if (branch.right) this.moveBranch(branch.right, dx, dy)
+    }
+
+    adjustLength(branch, shift) {
+        if (!branch) return
+
+        const newLen = branch.len + shift,
+              nx2 = branch.x1 + cos(branch.dir) * newLen,
+              ny2 = branch.y1 + sin(branch.dir) * newLen,
+              //dx  = nx2 - branch.x2,
+              //dy  = ny2 - branch.y2
+              dx  = cos(branch.dir) * shift,
+              dy  = sin(branch.dir) * shift
+
+        // move the tip
+        branch.x2 = nx2
+        branch.y2 = ny2
+        branch.len = newLen
+
+        if (branch.fruit) {
+            branch.fruit.x += dx
+            branch.fruit.y += dy
+        }
+        if (branch.hive) {
+            branch.hive.x += dx
+            branch.hive.y += dy
+        }
+
+        // move the children
+        this.moveBranch(branch.left,  dx, dy)
+        this.moveBranch(branch.right, dx, dy)
+    }
+
+    growLength(downBranch, shift) {
+        if (!downBranch) return
+
+        this.adjustLength(downBranch, shift)
+
+        this.growLength(downBranch.__, shift * env.tune.tree.lengthFactor)
     }
 
     branchOut(anchor, incl, steps) {
@@ -90,9 +148,10 @@ class Tree {
             width: 1,
         }
         this.branches.push(branch)
-        this.growWidth(branch.__, WIDTH_GROW)
 
         this.sprout(branch, steps - 1)
+
+        this.growWidth(branch.__, WIDTH_GROW)
 
         return branch
     }
@@ -102,6 +161,7 @@ class Tree {
 
         branch.left  = this.branchOut(branch, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
         branch.right = this.branchOut(branch,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
+        this.growLength(branch, env.tune.tree.lengthShift)
     }
 
     plant(steps) {

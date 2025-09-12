@@ -8,12 +8,15 @@ const tune = {
 
     tree: {
         line:       .3,
-        startLen:    100,
+        startLen:    40,
 
         baseJuice:   4,
         minDeposit:  7,
 
-        gatheringHeight: 0.35, // gathering point in tree height
+        lengthShift:   2,
+        lengthFactor: .5,
+
+        gatheringHeight: 0.4, // gathering point in tree height
     },
 
     fruit: {

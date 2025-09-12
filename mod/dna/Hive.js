@@ -27,6 +27,7 @@ class Hive {
                 this.branch = this.tree.root.right.right
                 break
         }
+        this.branch.hive = this
         this.x = this.branch.x2
         this.y = this.branch.y2
         this.cr2 = this.cr * this.cr
@@ -185,7 +186,7 @@ class Hive {
                 this.biomass -= env.tune.hive.spawnBiomass
                 const newBoid = this.spawn()
 
-                log(`boid-#${newBoid.id}, welcome to ${this.name}`)
+                // log(`boid-#${newBoid.id}, welcome to ${this.name}`)
             }
         }
     }
