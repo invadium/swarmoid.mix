@@ -1,4 +1,4 @@
-const STEPS       =  3
+const STEPS       =  4
 
 const BASE_LEN    = .62
 const VAR_LEN     = .25
@@ -28,9 +28,10 @@ class Tree {
             branches: [],
             fruits:   [],
             exohoney: 0,
+            juice:    1,
         }, st)
 
-        this.grow(STEPS)
+        this.plant(STEPS)
     }
 
     adjustBranch(branch) {
@@ -59,6 +60,9 @@ class Tree {
         this.y1 = this.y - .5 * this.h
         this.x2 = this.x + this.w
         this.y2 = this.y + this.h
+
+        this.juice = this.root.width * env.tune.tree.baseJuice
+        log(`[${this.name}] juice: ${this.juice}`)
     }
 
     growWidth(downBranch, width) {
@@ -100,7 +104,7 @@ class Tree {
         branch.right = this.branchOut(branch,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
     }
 
-    grow(steps) {
+    plant(steps) {
         // grow from the source
         const dir = -HALF_PI
         const len = env.tune.tree.startLen
@@ -118,8 +122,8 @@ class Tree {
         this.root = root
         this.branches.push(root)
 
-        root.left  = this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps)
-        root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps)
+        root.left  = this.branchOut(root, -(BASE_SPREAD + VAR_SPREAD * rnd()), steps - 1)
+        root.right = this.branchOut(root,   BASE_SPREAD + VAR_SPREAD * rnd(),  steps - 1)
 
         this.adjust()
     }
@@ -169,7 +173,7 @@ class Tree {
     }
 
     evo(dt) {
-        this.exohoney += env.tune.tree.output * dt
+        this.exohoney += this.juice * dt
         if (this.exohoney > env.tune.tree.minDeposit) {
             this.deposit(this.exohoney)
             this.exohoney = 0
