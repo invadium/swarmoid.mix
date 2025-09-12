@@ -10,10 +10,10 @@ const tune = {
         line:       .3,
         startLen:    40,
 
-        baseJuice:   4,
+        baseJuice:   8,
         minDeposit:  7,
 
-        lengthShift:   2,
+        lengthShift:   4,
         lengthFactor: .5,
 
         gatheringHeight: 0.4, // gathering point in tree height

@@ -79,14 +79,8 @@ class Tree {
         branch.x2 += dx
         branch.y2 += dy
 
-        if (branch.fruit) {
-            branch.fruit.x += dx
-            branch.fruit.y += dy
-        }
-        if (branch.hive) {
-            branch.hive.x += dx
-            branch.hive.y += dy
-        }
+        if (branch.hive) branch.hive.adjust()
+        if (branch.fruit) branch.fruit.move(dx, dy)
 
         if (branch.left ) this.moveBranch(branch.left,  dx, dy)
         if (branch.right) this.moveBranch(branch.right, dx, dy)
@@ -108,14 +102,8 @@ class Tree {
         branch.y2 = ny2
         branch.len = newLen
 
-        if (branch.fruit) {
-            branch.fruit.x += dx
-            branch.fruit.y += dy
-        }
-        if (branch.hive) {
-            branch.hive.x += dx
-            branch.hive.y += dy
-        }
+        if (branch.hive) branch.hive.adjust()
+        if (branch.fruit) branch.fruit.move(dx, dy)
 
         // move the children
         this.moveBranch(branch.left,  dx, dy)

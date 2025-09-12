@@ -15,6 +15,11 @@ class Fruit {
         this.r = this.cr = floor(this.exohoney / 10)
     }
 
+    move(dx, dy) {
+        this.x += dx
+        this.y += dy
+    }
+
     sprout() {
         this.exohoney = 0
         this.extra = 0

@@ -27,9 +27,7 @@ class Hive {
                 this.branch = this.tree.root.right.right
                 break
         }
-        this.branch.hive = this
-        this.x = this.branch.x2
-        this.y = this.branch.y2
+        this.attachToBranch(this.branch)
         this.cr2 = this.cr * this.cr
 
         this.grow({
@@ -68,6 +66,13 @@ class Hive {
         this.adjust()
     }
 
+    attachToBranch(branch) {
+        this.branch = branch
+        branch.hive = this
+        this.x = this.branch.x2
+        this.y = this.branch.y2
+    }
+
     grow(st) {
         const x = cos(st.phi) * st.R,
               y = sin(st.phi) * st.R
@@ -104,6 +109,10 @@ class Hive {
 
     adjust() {
         // TODO reflect exohoney stockpile visually
+        this.x = this.branch.x2
+        this.y = this.branch.y2
+        this.nestingPoint.x = this.x
+        this.nestingPoint.y = this.y
         this.gatheringPoint.x = this.tree.source.x
         this.gatheringPoint.y = this.tree.topY - this.tree.h * env.tune.tree.gatheringHeight
     }
